@@ -35,19 +35,21 @@ RUN groupadd -g 1000 dev
 # Sudo
 RUN echo '%dev  ALL=(ALL)   NOPASSWD: ALL' > /etc/sudoers.d/group-dev
 # Useradd
-RUN useradd -u 500 -g dev -G wheel hoge
+RUN useradd -u 500 -g dev -G wheel %%LOGIN_USER%%
 
 # ---------------------------------------
 #  Authentication
 # ---------------------------------------
 # Password
 RUN echo 'root:password' | chpasswd 
-RUN echo 'hoge:hoge' | chpasswd hoge
+RUN echo '%%LOGIN_USER%%:%%LOGIN_USER%%' | chpasswd %%LOGIN_USER%%
 # SSH
 RUN sed -ri 's/^#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN sed -ri 's/^UsePAM yes/UsePAM no/' /etc/ssh/sshd_config
-RUN mkdir -m 700 /home/hoge/.ssh
-RUN chown hoge:dev /home/hoge/.ssh
+RUN mkdir -m 700 /home/%%LOGIN_USER%%/.ssh
+COPY authorized_keys /home/%%LOGIN_USER%%/.ssh/authorized_keys
+RUN chmod 600 /home/%%LOGIN_USER%%/.ssh/authorized_keys
+RUN chown -R %%LOGIN_USER%%:dev /home/%%LOGIN_USER%%/.ssh
 
 # ---------------------------------------
 #  Port
