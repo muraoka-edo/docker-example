@@ -28,7 +28,7 @@ echo " $result"
 echo "========   End: Genarated Docker Image ==========="
 echo ""
 
-docker run -p 2222:22 -d -e HOST_NAME=${host_name} ${docker_id}/${docker_attr}
+docker run -p ${port_fowarding_for_ssh}:22 -d -e HOST_NAME=${host_name} ${docker_id}/${docker_attr}
 
 result=$(docker ps | grep ${docker_id}/${docker_attr})
 echo ""
