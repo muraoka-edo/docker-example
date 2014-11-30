@@ -1,0 +1,4 @@
+export tmpl='Dockerfile.tmpl'
+export docker_id='dmuraoka'
+export docker_attr='base'
+export os_user='anduser01'

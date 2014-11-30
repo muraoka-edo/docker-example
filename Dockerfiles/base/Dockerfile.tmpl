@@ -3,7 +3,8 @@ FROM centos:centos6
 # ---------------------------------------
 #  System Env
 # ---------------------------------------
-ENV HOSTNAME docker_test01
+ENV HOST_NAME docker_host01
+
 # Bash
 RUN echo "export PS1='[\u@\h \W]$ ' " >> /etc/profile
 RUN echo "set -o vi"                  >> /etc/profile
@@ -35,21 +36,21 @@ RUN groupadd -g 1000 dev
 # Sudo
 RUN echo '%dev  ALL=(ALL)   NOPASSWD: ALL' > /etc/sudoers.d/group-dev
 # Useradd
-RUN useradd -u 500 -g dev -G wheel %%LOGIN_USER%%
+RUN useradd -u 500 -g dev -G wheel %%os_user%%
 
 # ---------------------------------------
 #  Authentication
 # ---------------------------------------
 # Password
 RUN echo 'root:password' | chpasswd 
-RUN echo '%%LOGIN_USER%%:%%LOGIN_USER%%' | chpasswd %%LOGIN_USER%%
+RUN echo '%%os_user%%:%%os_user%%' | chpasswd %%os_user%%
 # SSH
 RUN sed -ri 's/^#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN sed -ri 's/^UsePAM yes/UsePAM no/' /etc/ssh/sshd_config
-RUN mkdir -m 700 /home/%%LOGIN_USER%%/.ssh
-COPY authorized_keys /home/%%LOGIN_USER%%/.ssh/authorized_keys
-RUN chmod 600 /home/%%LOGIN_USER%%/.ssh/authorized_keys
-RUN chown -R %%LOGIN_USER%%:dev /home/%%LOGIN_USER%%/.ssh
+RUN mkdir -m 700 /home/%%os_user%%/.ssh
+COPY authorized_keys /home/%%os_user%%/.ssh/authorized_keys
+RUN chmod 600 /home/%%os_user%%/.ssh/authorized_keys
+RUN chown -R %%os_user%%:dev /home/%%os_user%%/.ssh
 
 # ---------------------------------------
 #  Port
